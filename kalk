@@ -1,38 +1,17 @@
-// SuperKalkulator.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
-//
-
-#include "pch.h"
 #include <iostream>
-#include <stdint.h>//uint32_t
+#include <stdint.h>
 
 using namespace std;
 
 #define M_PI 3.141592653589793
 
-void WczytajArgumentyDouble(int liczbaArgumentow, double *wskaznikDoTablicy) {
+void WczytajArgumentyDoTablicy(int liczbaArgumentow, double *wskaznikDoTablicy) {
 
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
 		cin >> wskaznikDoTablicy[i];
 	}
 }
-
-void WczytajArgumentyInt(int liczbaArgumentow, int *wskaznikDoTablicy) {
-
-	for (int i = 0; i < liczbaArgumentow; i++)
-	{
-		cin >> wskaznikDoTablicy[i];
-	}
-}
-
-void WczytajArgumentyUint(int liczbaArgumentow, uint32_t *wskaznikDoTablicy) {
-
-	for (int i = 0; i < liczbaArgumentow; i++)
-	{
-		cin >> wskaznikDoTablicy[i];
-	}
-}
-
 
 void ZamienMiejscami(double &argument1, double &argument2) {
 
@@ -40,7 +19,7 @@ void ZamienMiejscami(double &argument1, double &argument2) {
 	double *y = &argument2;
 
 
-	if (*x != *y) { // zamiana bez użycia 3-ciej zmiennej
+	if (*x != *y) { // zamiana bez u|ycia 3-ciej zmiennej
 		*x += *y;
 		*y = *x - *y;
 		*x -= *y;
@@ -70,15 +49,15 @@ double Sufit(double x) {
 	}
 }
 
-//znajdź pozycje najmniejszej liczby
+//znajdz pozycje najmniejszej liczby
 int f0(int liczbaArgumentow, double *wskaznikDoTablicy) {
 
-	double najmniejszaWartosc = 2147483647; //wartość maksymalna dla int'a
-
 	if (wskaznikDoTablicy == NULL) {
-		int *tablicaArgumentow = new int[liczbaArgumentow];
-		WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+		double *tablicaArgumentow = new double[liczbaArgumentow];
+		WczytajArgumentyDoTablicy(liczbaArgumentow, tablicaArgumentow);
 
+
+		int najmniejszaWartosc = 2147483647; //warto[ maksymalna dla int'a
 		int pozycja = 0;
 
 		for (int i = 0; i < liczbaArgumentow; i++)
@@ -88,7 +67,7 @@ int f0(int liczbaArgumentow, double *wskaznikDoTablicy) {
 				pozycja = i;
 			}
 		}
-		//teraz znajdz możliwe wystąpienia kilku najmniejszych takich samych liczb
+		//teraz znajdz mo|liwe wystpienia kilku najmniejszych takich samych liczb
 		for (int i = 0; i < liczbaArgumentow; i++)
 		{
 			if (tablicaArgumentow[i] == tablicaArgumentow[pozycja])
@@ -98,8 +77,9 @@ int f0(int liczbaArgumentow, double *wskaznikDoTablicy) {
 		delete[] tablicaArgumentow;
 		return pozycja;
 	}
-	else {//jeśli funkcja jakaś podała już istniejącą tablicę
-	
+	else {//je[li funkcja jaka[ podaBa ju| istniejc tablic
+
+		int najmniejszaWartosc = 2147483647; //warto[ maksymalna dla int'a
 		int pozycja = 0;
 
 		for (int i = 0; i < liczbaArgumentow; i++)
@@ -113,7 +93,7 @@ int f0(int liczbaArgumentow, double *wskaznikDoTablicy) {
 	}
 }
 
-//posortuj tablice malejąco
+//posortuj tablice malejco
 void f1(int liczbaArgumentow) {
 
 	double *tablicaArgumentow = new double[liczbaArgumentow];
@@ -138,7 +118,7 @@ void f1(int liczbaArgumentow) {
 
 }
 
-//znajdz długość wektora
+//znajdz dBugo[ wektora
 double f2(int liczbaArgumentow, double *wskaznikDoTablicy) {
 
 
@@ -160,7 +140,7 @@ double f2(int liczbaArgumentow, double *wskaznikDoTablicy) {
 		return 0;
 	}
 
-	else {//jeśli funkcja jakaś podała już istniejącą tablicę
+	else {//je[li funkcja jaka[ podaBa ju| istniejc tablic
 		double suma = 0;
 		for (int i = 0; i < liczbaArgumentow; i++)
 		{
@@ -193,12 +173,12 @@ void f3(int liczbaArgumentow) {
 	}
 	double odchylenie = f2(liczbaArgumentow, tablicaArgumentow) / sqrt((double)liczbaArgumentow - 1);
 
-	cout << Podloga(odchylenie)<< endl;
+	cout << Podloga(odchylenie) << endl;
 
 	delete[] tablicaArgumentow;
 }
 
-//odwróć tablice w miejscu
+//odwr� tablice w miejscu
 void f4(int liczbaArgumentow) {
 
 	double *tablicaArgumentow = new double[liczbaArgumentow];
@@ -264,11 +244,11 @@ void PosortujPunktyZadanie6(int liczbaArgumentow, double *tablicaArgumentow, dou
 		tablicaKatow[i / 2] = (atan2(deltaY, deltaX) * 180 / M_PI); // tangens, konwersja na stopnie, tablica ta posiada polowe wielkosci 'tablicaArgumentow'
 	}
 
-	//posortować teraz wg kątów malejąco
+	//posortowa teraz wg kt�w malejco
 
 	for (int i = 0; i < liczbaArgumentow; i += 2)
 	{
-		double najmniejszaWartosc = 2147483647; //wartość maksymalna dla int'a
+		int najmniejszaWartosc = 2147483647; //warto[ maksymalna dla int'a
 		int pozycja = 0;
 
 		for (int j = 0; j < (liczbaArgumentow - i) / 2; j++) // i/2 bo tablicaKatow jest 2 razy mniejsza
@@ -279,25 +259,20 @@ void PosortujPunktyZadanie6(int liczbaArgumentow, double *tablicaArgumentow, dou
 			}
 		}
 
-		ZamienMiejscami(tablicaKatow[((liczbaArgumentow - i) / 2) - 1], tablicaKatow[pozycja]);//kąty
+		ZamienMiejscami(tablicaKatow[((liczbaArgumentow - i) / 2) - 1], tablicaKatow[pozycja]);//kty
 
-		ZamienMiejscami(tablicaArgumentow[liczbaArgumentow - 2 - i], tablicaArgumentow[pozycja * 2]);//wartosci x punktów
-		ZamienMiejscami(tablicaArgumentow[liczbaArgumentow - 1 - i], tablicaArgumentow[pozycja * 2 + 1]);//wartosci y punktów
+		ZamienMiejscami(tablicaArgumentow[liczbaArgumentow - 2 - i], tablicaArgumentow[pozycja * 2]);//wartosci x punkt�w
+		ZamienMiejscami(tablicaArgumentow[liczbaArgumentow - 1 - i], tablicaArgumentow[pozycja * 2 + 1]);//wartosci y punkt�w
 	}
 }
 
-struct punkt{
-	double x;
-	double y;
-} Punkt;
-
-//pole wielokąta wypukłego
+//pole wielokta wypukBego
 void f6(int liczbaArgumentow) {
 
 	double *tablicaArgumentow = new double[liczbaArgumentow];
 	WczytajArgumentyDoTablicy(liczbaArgumentow, tablicaArgumentow);
 
-	//oblicz punkt leżący wewnatrz wielokąta
+	//oblicz punkt le|cy wewnatrz wielokta
 	double srodekX = 0, srodekY = 0;
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
@@ -324,17 +299,16 @@ void f6(int liczbaArgumentow) {
 
 	suma += (tablicaArgumentow[liczbaArgumentow - 2] * tablicaArgumentow[1] - tablicaArgumentow[liczbaArgumentow - 1] * tablicaArgumentow[0]); //ostatni element sumy
 	cout << abs(suma / 2) << endl;
-
 	delete[] tablicaArgumentow;
 }
 
-//równanie kwadratowe i sześcienne
+//r�wnanie kwadratowe i sze[cienne
 void f7(int liczbaArgumentow) {
 
 	double *tablicaArgumentow = new double[liczbaArgumentow];
 	WczytajArgumentyDoTablicy(liczbaArgumentow, tablicaArgumentow);
 
-	//równanie kwadratowe
+	//r�wnanie kwadratowe
 	if (tablicaArgumentow[0] == 0) {
 		double a = tablicaArgumentow[1];
 		double b = tablicaArgumentow[2];
@@ -360,7 +334,7 @@ void f7(int liczbaArgumentow) {
 		}
 	}
 	else {
-		//równanie sześcienne
+		//r�wnanie sze[cienne
 		double a = tablicaArgumentow[1]; // od drugiego elementu jest a
 		double b = tablicaArgumentow[2];
 		double c = tablicaArgumentow[3];
@@ -370,7 +344,7 @@ void f7(int liczbaArgumentow) {
 		
 		double delta = q * q / 4 + p * p*p / 27;
 
-		if (Sufit(delta) > 0) {//jest tylko jedno rozwiązanie
+		if (Sufit(delta) > 0) {//jest tylko jedno rozwizanie
 			
 			double pomocnicza1 = -q / 2 + sqrt(delta);
 			double pomocnicza2 = -q / 2 - sqrt(delta);
@@ -394,7 +368,7 @@ void f7(int liczbaArgumentow) {
 			cout << Podloga(x) << endl;
 		}
 
-		else if (Sufit(delta) == 0) { // dwa rozwiązania		
+		else if (Sufit(delta) == 0) { // dwa rozwizania		
 
 			double x1 = 0, x2 = 0;
 			if (q < 0) {
@@ -408,7 +382,7 @@ void f7(int liczbaArgumentow) {
 
 			cout << Podloga(x1) << " " << Podloga(x2) << endl;
 		}
-		else { // trzy rozwiązania
+		else { // trzy rozwizania
 			double x1 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * asin((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p)))) - a/3.0;
 			double x2 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * asin((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p))) + M_PI / 3.0) - a / 3.0;
 			double x3 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * acos((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p))) + M_PI / 6.0) - a / 3.0;
@@ -421,7 +395,6 @@ void f7(int liczbaArgumentow) {
 	delete[] tablicaArgumentow;
 }
 
-//oblicz wyrażenie dla zadanego n
 void f8(int liczbaArgumentow) {
 	double *tablicaArgumentow = new double[liczbaArgumentow];
 	WczytajArgumentyDoTablicy(liczbaArgumentow, tablicaArgumentow);
@@ -435,9 +408,8 @@ void f8(int liczbaArgumentow) {
 	delete[] tablicaArgumentow;
 }
 
-// zlicz liczbę bitów
 void f9(int liczbaArgumentow) {
-	uint32_t *tablicaArgumentow = new uint32_t[liczbaArgumentow];
+	double *tablicaArgumentow = new double[liczbaArgumentow];
 	WczytajArgumentyDoTablicy(liczbaArgumentow, tablicaArgumentow);
 
 	for (int i = 0; i < liczbaArgumentow; i++)
@@ -492,13 +464,3 @@ int main() {
 	};
 	return 0;
 }
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
-// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
-
-// Porady dotyczące rozpoczynania pracy:
-//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
-//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
-//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
-//   4. Użyj okna Lista błędów, aby zobaczyć błędy
-//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
-//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln
