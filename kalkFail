@@ -1,0 +1,548 @@
+// SuperKalkulator.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
+//
+
+#include "pch.h"
+#include <iostream>
+#include <stdint.h>//uint32_t
+#include <complex>
+
+using namespace std;
+
+#define M_PI 3.141592653589793
+
+void WczytajArgumentyDouble(int liczbaArgumentow, double *wskaznikDoTablicy) {
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		cin >> wskaznikDoTablicy[i];
+	}
+}
+
+void WczytajArgumentyInt(int liczbaArgumentow, int *wskaznikDoTablicy) {
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		cin >> wskaznikDoTablicy[i];
+	}
+}
+
+void WczytajArgumentyUint(int liczbaArgumentow, uint32_t *wskaznikDoTablicy) {
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		cin >> wskaznikDoTablicy[i];
+	}
+}
+
+
+void ZamienMiejscamiDouble(double &argument1, double &argument2) {
+
+	double *x = &argument1;
+	double *y = &argument2;
+
+
+	if (*x != *y) { // zamiana bez użycia 3-ciej zmiennej
+		*x += *y;
+		*y = *x - *y;
+		*x -= *y;
+	}
+}
+
+void ZamienMiejscamiInt(int &argument1, int &argument2) {
+
+	int *x = &argument1;
+	int *y = &argument2;
+
+
+	if (*x != *y) { // zamiana bez użycia 3-ciej zmiennej
+		*x += *y;
+		*y = *x - *y;
+		*x -= *y;
+	}
+}
+
+double Podloga(double x) {
+	if (x >= 0) {
+		return (int)x;
+	}
+	else {
+		if ((int)x != x) {
+			return (int)(x - 1);
+		}
+		else return x;
+	}
+}
+double Sufit(double x) {
+	if (x >= 0) {
+		return (int)(x + 1);
+	}
+	else {
+		if ((int)x != x) {
+			return (int)x;
+		}
+		else return x;
+	}
+}
+
+//znajdź pozycje najmniejszej liczby
+int f0(int liczbaArgumentow, double *wskaznikDoTablicy) {
+
+	double najmniejszaWartosc = 2147483647; //wartość maksymalna dla int'a
+
+	if (wskaznikDoTablicy == NULL) {
+		int *tablicaArgumentow = new int[liczbaArgumentow];
+		WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+
+		int pozycja = 0;
+
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			if (tablicaArgumentow[i] < najmniejszaWartosc) {
+				najmniejszaWartosc = tablicaArgumentow[i];
+				pozycja = i;
+			}
+		}
+		//teraz znajdz możliwe wystąpienia kilku najmniejszych takich samych liczb
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			if (tablicaArgumentow[i] == tablicaArgumentow[pozycja])
+				cout << i + 1 << " "; //+ 1, bo tablica zaczyna sie od 0
+		}
+		cout << endl;
+		delete[] tablicaArgumentow;
+		return pozycja;
+	}
+	else {//jeśli funkcja jakaś podała już istniejącą tablicę
+
+		int pozycja = 0;
+
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			if (wskaznikDoTablicy[i] < najmniejszaWartosc) {
+				najmniejszaWartosc = wskaznikDoTablicy[i];
+				pozycja = i;
+			}
+		}
+		return pozycja;
+	}
+}
+
+//posortuj tablice malejąco
+void f1(int liczbaArgumentow, double *wskaznikDoTablicy) {
+
+	if (wskaznikDoTablicy == NULL) {
+		double *tablicaArgumentow = new double[liczbaArgumentow];
+
+		WczytajArgumentyDouble(liczbaArgumentow, tablicaArgumentow);
+		int pozycja = 0;
+
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			pozycja = f0(liczbaArgumentow - i, tablicaArgumentow);//podaj do f0 liczbaArgumentow - i,a na koncowkach 'tablicaArgumentow' dodawaj najmniejsze liczby
+
+			ZamienMiejscamiDouble(tablicaArgumentow[liczbaArgumentow - i - 1], tablicaArgumentow[pozycja]);
+		}
+
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			cout << tablicaArgumentow[i] << " ";
+		}
+		cout << endl;
+
+		delete[] tablicaArgumentow;
+	}
+	else {
+		int pozycja = 0;
+
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			pozycja = f0(liczbaArgumentow - i, wskaznikDoTablicy);//podaj do f0 liczbaArgumentow - i,a na koncowkach 'tablicaArgumentow' dodawaj najmniejsze liczby
+
+			ZamienMiejscamiDouble(wskaznikDoTablicy[liczbaArgumentow - i - 1], wskaznikDoTablicy[pozycja]);
+		}
+	}
+}
+
+//znajdz długość wektora
+double f2(int liczbaArgumentow, double *wskaznikDoTablicy) {
+
+
+	if (wskaznikDoTablicy == NULL) {
+		int *tablicaArgumentow = new int[liczbaArgumentow];
+
+		WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+
+
+		double suma = 0;
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			suma += tablicaArgumentow[i] * tablicaArgumentow[i];
+		}
+
+		delete[] tablicaArgumentow;
+
+		cout << Podloga(sqrt(suma)) << endl;
+		return 0;
+	}
+
+	else {//jeśli funkcja jakaś podała już istniejącą tablicę
+		double suma = 0;
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			suma += wskaznikDoTablicy[i] * wskaznikDoTablicy[i];
+		}
+
+		return sqrt(suma);
+	}
+}
+
+//znajdz odchylenie standardowe
+void f3(int liczbaArgumentow) {
+
+	double *tablicaArgumentow = new double[liczbaArgumentow];
+	WczytajArgumentyDouble(liczbaArgumentow, tablicaArgumentow);
+
+	double sredniaLiczb = 0;
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		sredniaLiczb += tablicaArgumentow[i];
+	}
+	sredniaLiczb = sredniaLiczb / liczbaArgumentow;
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		tablicaArgumentow[i] -= sredniaLiczb;
+	}
+	double odchylenie = f2(liczbaArgumentow, tablicaArgumentow) / sqrt((double)liczbaArgumentow);
+
+	cout << Podloga(odchylenie) << endl;
+
+	delete[] tablicaArgumentow;
+}
+
+//odwróć tablice w miejscu
+void f4(int liczbaArgumentow, double *wskaznikDoTablicy) {
+
+	if (wskaznikDoTablicy == NULL) {
+		int *tablicaArgumentow = new int[liczbaArgumentow];
+		WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+
+		for (int i = 0; i < liczbaArgumentow / 2; i++)
+		{
+			ZamienMiejscamiInt(tablicaArgumentow[liczbaArgumentow - i - 1],tablicaArgumentow[i]);
+		}
+		for (int i = 0; i < liczbaArgumentow; i++)
+		{
+			cout << tablicaArgumentow[i] << " ";
+		}
+		cout << endl;
+
+		delete[] tablicaArgumentow;
+	}
+	else {
+		for (int i = 0; i < liczbaArgumentow / 2; i++)
+		{
+			ZamienMiejscamiDouble(wskaznikDoTablicy[liczbaArgumentow - i - 1], wskaznikDoTablicy[i]);
+		}
+	}
+}
+
+//sprawdz czy liczby sa pierwsze
+void f5(int liczbaArgumentow) {
+
+	int *tablicaArgumentow = new int[liczbaArgumentow];
+	WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+
+	bool czyLiczbaJestPierwsza;
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		czyLiczbaJestPierwsza = true;
+
+		for (int j = 2; j <= Podloga(sqrt(tablicaArgumentow[i])); j++)
+		{
+			if ((int)Podloga(tablicaArgumentow[i]) % (j) == 0) {
+				czyLiczbaJestPierwsza = false;
+				break;
+			}
+		}
+
+		if (czyLiczbaJestPierwsza) {
+			tablicaArgumentow[i] = 1;
+		}
+		else {
+			tablicaArgumentow[i] = 0;
+		}
+
+		cout << tablicaArgumentow[i] << " ";
+	}
+	cout << endl;
+
+	delete[] tablicaArgumentow;
+}
+
+void PosortujPunktyZadanie6(int liczbaArgumentow, double *tablicaArgumentow, double srodekX, double srodekY) {
+
+	double *tablicaKatow = new double[liczbaArgumentow];
+
+	//oblicz tangensa dla kazdego punktu xy
+	for (int i = 0; i < liczbaArgumentow - 1; i += 2)//liczymy clockwise > v < ^
+	{
+		double deltaX = tablicaArgumentow[i] - srodekX;
+		double deltaY = tablicaArgumentow[i + 1] - srodekY;
+
+		tablicaKatow[i / 2] = (atan2(deltaY, deltaX) * 180 / M_PI); // tangens, konwersja na stopnie, tablica ta posiada polowe wielkosci 'tablicaArgumentow'
+	}
+
+	//posortować teraz wg kątów malejąco
+
+	for (int i = 0; i < liczbaArgumentow; i += 2)
+	{
+		double najmniejszaWartosc = 2147483647; //wartość maksymalna dla int'a
+		int pozycja = 0;
+
+		for (int j = 0; j < (liczbaArgumentow - i) / 2; j++) // i/2 bo tablicaKatow jest 2 razy mniejsza
+		{
+			if (tablicaKatow[j] < najmniejszaWartosc) {
+				najmniejszaWartosc = tablicaKatow[j];
+				pozycja = j;
+			}
+		}
+
+		ZamienMiejscamiDouble(tablicaKatow[((liczbaArgumentow - i) / 2) - 1], tablicaKatow[pozycja]);//kąty
+
+		ZamienMiejscamiDouble(tablicaArgumentow[liczbaArgumentow - 2 - i], tablicaArgumentow[pozycja * 2]);//wartosci x punktów
+		ZamienMiejscamiDouble(tablicaArgumentow[liczbaArgumentow - 1 - i], tablicaArgumentow[pozycja * 2 + 1]);//wartosci y punktów
+	}
+}
+
+struct punkt {
+	double x;
+	double y;
+} Punkt;
+
+//pole wielokąta wypukłego
+void f6(int liczbaArgumentow) {//12 test za wolno
+
+	double *tablicaArgumentow = new double[liczbaArgumentow];
+	WczytajArgumentyDouble(liczbaArgumentow, tablicaArgumentow);
+
+	//oblicz punkt leżący wewnatrz wielokąta
+	double srodekX = 0, srodekY = 0;
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		if (i % 2 == 0) {
+			srodekX += tablicaArgumentow[i];
+		}
+		else {
+			srodekY += tablicaArgumentow[i];
+		}
+	}
+
+	srodekX = srodekX / (liczbaArgumentow / 2);
+	srodekY = srodekY / (liczbaArgumentow / 2);
+
+	PosortujPunktyZadanie6(liczbaArgumentow, tablicaArgumentow, srodekX, srodekY);
+
+	//policz pole tego wielokata
+	double suma = 0;
+
+	for (int i = 0; i < liczbaArgumentow - 3; i += 2)
+	{
+		suma += (tablicaArgumentow[i] * tablicaArgumentow[i + 3] - tablicaArgumentow[i + 1] * tablicaArgumentow[i + 2]);
+	}
+
+	suma += (tablicaArgumentow[liczbaArgumentow - 2] * tablicaArgumentow[1] - tablicaArgumentow[liczbaArgumentow - 1] * tablicaArgumentow[0]); //ostatni element sumy
+	cout << abs(suma / 2) << endl;
+
+	delete[] tablicaArgumentow;
+}
+
+//równanie kwadratowe i sześcienne
+void f7(int liczbaArgumentow) {
+
+	double *tablicaArgumentow = new double[liczbaArgumentow];
+	WczytajArgumentyDouble(liczbaArgumentow, tablicaArgumentow);
+
+	//równanie kwadratowe
+	if (tablicaArgumentow[0] == 0) {
+		double a = tablicaArgumentow[1];
+		double b = tablicaArgumentow[2];
+		double c = tablicaArgumentow[3];
+
+		double delta = b * b - 4 * a*c;
+
+
+		if (delta == 0) {
+			double x = (-b) / (2 * a);
+			cout << Podloga(x) << endl;
+		}
+		else if (delta > 0) {
+			double x1 = (-b - sqrt(delta)) / (2 * a);
+			double x2 = (-b + sqrt(delta)) / (2 * a);
+
+			if (x1 < x2) {//mniejszy pierwiastek wyswietl pierwszy
+				cout << Podloga(x1) << " " << Podloga(x2) << endl;
+			}
+			else {
+				cout << Podloga(x2) << " " << Podloga(x1) << endl;
+			}
+
+		}
+		else
+		{
+			cout << endl;
+		}
+	}
+	else {
+		//równanie sześcienne
+		double a = tablicaArgumentow[0];
+		double b = tablicaArgumentow[1];
+		double c = tablicaArgumentow[2];
+		double d = tablicaArgumentow[3];
+
+		double delta = 18 * a*b*c*d - 4 * b*b*b*d + b * b*c*c - 4 * a*c*c*c - 27 * a*a*d*d;
+		double delta_0 = b * b - 3 * a*c;
+		double delta_1 = 2 * b*b*b - 9 * a*b*c + 27 * a*a*d;
+		cout << "delta " << delta << endl;
+		cout << "delta0 " << delta_0 << endl;
+		cout << "delta1 " << delta_1 << endl;
+		
+		if (delta_0 == 0 || delta_1 == 0) { //specjalny przypadek żeby nie dzielić przez zero
+			
+			if (delta == 0 && delta_0 == 0) { //jeden portrójny pierwiastek
+				double x = -b / 3 / a;
+				cout << x << endl;
+			}
+
+			else { // sama delta == 0, to mamy jeden podwójny pierwiastek i jeden pojedynczy pierwiastek
+				double x1 = (9 * a*d - b * c) / (2 * delta_0);
+				double x2 = (4 * a*b*c - 9 * a*a*d - b * b*b) / (a*delta_0);
+
+				if (x1 < x2) { // sortowanie bo stos tak chce
+					cout << x1 << " " << x2 << endl;
+				}
+				else {
+					cout << x2 << " " << x1 << endl;
+				}
+			}
+		}
+		else {
+			complex<double> C = pow((delta_1 + pow(-27 * a*a*delta*1i,1/2)) / 2.0, 1.0/3.0);//znak jaki chcesz, ale lepiej +sqrt	
+			complex<double> C_1 = (-1.0 / 2.0 + 1.0 / 2.0*sqrt(3.0) * 1i) * C;
+			complex<double> C_2 = (-1.0 / 2.0 - 1.0 / 2.0*sqrt(3.0) * 1i) * C;
+			cout << " C " << C << endl;
+			complex<double> x1 = -1.0 / (3 * a)*(b + C + delta_0 / C);//pierwiastki
+			complex<double> x2 = -1.0 / (3 * a)*(b + C_1 + delta_0 / C_1);
+			complex<double> x3 = -1.0 / (3 * a)*(b + C_2 + delta_0 / C_2);
+
+			//zobacz które rozwiązania są realne i posortuj je rosnąco dla stosu
+			bool x1Realne = (x1.imag() == 0);
+			bool x2Realne = (x2.imag() == 0);
+			bool x3Realne = (x3.imag() == 0);
+
+			cout << "x1 " << x1 << " x2 " << x2 << " x3 " << x3 << endl;
+
+			int liczbaRealnychRozwiazan = x1Realne + x2Realne + x3Realne;
+			double *rozwiazania = new double[liczbaRealnychRozwiazan];
+
+			for (int i = 0; i < liczbaRealnychRozwiazan; i++)
+			{
+				if (x1Realne) { rozwiazania[i] = (double)x1.real(); }
+				else if (x2Realne) { rozwiazania[i] = (double)x1.real(); }
+				else if (x3Realne) { rozwiazania[i] = (double)x1.real(); }
+			}
+			f1(liczbaRealnychRozwiazan, rozwiazania);
+			f4(liczbaRealnychRozwiazan, rozwiazania);
+
+			for (int i = 0; i < liczbaRealnychRozwiazan; i++)
+			{
+				cout << rozwiazania[i] << " ";
+			}
+			cout << endl;
+		}
+		delete[] tablicaArgumentow;
+	}
+}
+
+//oblicz wyrażenie dla zadanego n
+void f8(int liczbaArgumentow) {
+	int *tablicaArgumentow = new int[liczbaArgumentow];
+	WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
+
+	long long int wynik = 0;
+	for (int i = 1; i <= tablicaArgumentow[0]; i++)
+	{
+		wynik += i * (i + 1)*(i + 1);
+	}
+	cout << fixed << wynik << endl;
+	delete[] tablicaArgumentow;
+}
+
+// zlicz liczbę bitów
+void f9(int liczbaArgumentow) {
+	uint32_t *tablicaArgumentow = new uint32_t[liczbaArgumentow];
+	WczytajArgumentyUint(liczbaArgumentow, tablicaArgumentow);
+
+	for (int i = 0; i < liczbaArgumentow; i++)
+	{
+		uint32_t liczbaBitow = tablicaArgumentow[i];
+
+		liczbaBitow = liczbaBitow - ((liczbaBitow >> 1) & 0x55555555);
+		liczbaBitow = (liczbaBitow & 0x33333333) + ((liczbaBitow >> 2) & 0x33333333);
+		liczbaBitow = (((liczbaBitow + (liczbaBitow >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
+
+		cout << liczbaBitow << " ";
+	}
+	cout << endl;
+}
+
+int main() {
+	int subprogram, liczbaArgumentow;
+
+	while (cin >> subprogram >> liczbaArgumentow) {
+		switch (subprogram) {
+		case 0:
+			f0(liczbaArgumentow, NULL);
+			break;
+		case 1:
+			f1(liczbaArgumentow, NULL);
+			break;
+		case 2:
+			f2(liczbaArgumentow, NULL);
+			break;
+		case 3:
+			f3(liczbaArgumentow);
+			break;
+		case 4:
+			f4(liczbaArgumentow, NULL);
+			break;
+		case 5:
+			f5(liczbaArgumentow);
+			break;
+		case 6:
+			f6(liczbaArgumentow);
+			break;
+		case 7:
+			f7(liczbaArgumentow);
+			break;
+		case 8:
+			f8(liczbaArgumentow);
+			break;
+		case 9:
+			f9(liczbaArgumentow);
+			break;
+		}
+	};
+	return 0;
+}
+// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
+// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
+
+// Porady dotyczące rozpoczynania pracy:
+//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
+//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
+//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
+//   4. Użyj okna Lista błędów, aby zobaczyć błędy
+//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
+//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln
