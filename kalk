@@ -25,14 +25,13 @@ void WczytajArgumentyInt(int liczbaArgumentow, int *wskaznikDoTablicy) {
 	}
 }
 
-void WczytajArgumentyUint(int liczbaArgumentow, uint32_t *wskaznikDoTablicy) {
+void WczytajArgumentyUint(int liczbaArgumentow, unsigned long long int *wskaznikDoTablicy) {
 
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
 		cin >> wskaznikDoTablicy[i];
 	}
 }
-
 
 void ZamienMiejscamiDouble(double &argument1, double &argument2) {
 
@@ -60,7 +59,8 @@ void ZamienMiejscamiInt(int &argument1, int &argument2) {
 	}
 }
 
-double Podloga(double x) {
+double Podloga(double y) {
+	double x = ((__int64)(y * 1.0e+10)) / (1.0e+10);//zeruje wszystkie liczby po 10 miejscu po przecinku
 	if (x >= 0) {
 		return (int)x;
 	}
@@ -71,15 +71,18 @@ double Podloga(double x) {
 		else return x;
 	}
 }
-double Sufit(double x) {
-	if (x >= 0) {
-		return (int)(x + 1);
+
+double CubicRoot(double x) {
+	if (x == 0) {
+		return x;
+	}
+	else if (x > 0) {
+		x = pow(x, 1.0 / 3.0);
+		return x;
 	}
 	else {
-		if ((int)x != x) {
-			return (int)x;
-		}
-		else return x;
+		x = -pow(-x, 1.0 / 3.0);
+		return x;
 	}
 }
 
@@ -154,7 +157,6 @@ void f1(int liczbaArgumentow) {
 //znajdz długość wektora
 double f2(int liczbaArgumentow, double *wskaznikDoTablicy) {
 
-
 	if (wskaznikDoTablicy == NULL) {
 		int *tablicaArgumentow = new int[liczbaArgumentow];
 
@@ -180,7 +182,7 @@ double f2(int liczbaArgumentow, double *wskaznikDoTablicy) {
 			suma += wskaznikDoTablicy[i] * wskaznikDoTablicy[i];
 		}
 
-		return sqrt(suma);
+		return suma;
 	}
 }
 
@@ -195,13 +197,13 @@ void f3(int liczbaArgumentow) {
 	{
 		sredniaLiczb += tablicaArgumentow[i];
 	}
-	sredniaLiczb = sredniaLiczb / liczbaArgumentow;
+	sredniaLiczb /= liczbaArgumentow;
 
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
 		tablicaArgumentow[i] -= sredniaLiczb;
 	}
-	double odchylenie = f2(liczbaArgumentow, tablicaArgumentow) / sqrt((double)liczbaArgumentow);
+	double odchylenie = sqrt(f2(liczbaArgumentow, tablicaArgumentow) / liczbaArgumentow);
 
 	cout << Podloga(odchylenie) << endl;
 
@@ -216,9 +218,7 @@ void f4(int liczbaArgumentow) {
 
 	for (int i = 0; i < liczbaArgumentow / 2; i++)
 	{
-		tablicaArgumentow[liczbaArgumentow - i - 1] += tablicaArgumentow[i];
-		tablicaArgumentow[i] = tablicaArgumentow[liczbaArgumentow - i - 1] - tablicaArgumentow[i];
-		tablicaArgumentow[liczbaArgumentow - i - 1] -= tablicaArgumentow[i];
+		ZamienMiejscamiInt(tablicaArgumentow[liczbaArgumentow - i - 1], tablicaArgumentow[i]);
 	}
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
@@ -240,22 +240,25 @@ void f5(int liczbaArgumentow) {
 	for (int i = 0; i < liczbaArgumentow; i++)
 	{
 		czyLiczbaJestPierwsza = true;
-
-		for (int j = 2; j <= Podloga(sqrt(tablicaArgumentow[i])); j++)
-		{
-			if ((int)Podloga(tablicaArgumentow[i]) % (j) == 0) {
-				czyLiczbaJestPierwsza = false;
-				break;
-			}
-		}
-
-		if (czyLiczbaJestPierwsza) {
-			tablicaArgumentow[i] = 1;
-		}
-		else {
+		if (tablicaArgumentow[i] != 2 && tablicaArgumentow[i] % 2 == 0) {
 			tablicaArgumentow[i] = 0;
 		}
+		else {
+			for (int j = 3; j*j <= tablicaArgumentow[i]; j += 2)
+			{
+				if (tablicaArgumentow[i] % j == 0) {
+					czyLiczbaJestPierwsza = false;
+					break;
+				}
+			}
 
+			if (czyLiczbaJestPierwsza) {
+				tablicaArgumentow[i] = 1;
+			}
+			else {
+				tablicaArgumentow[i] = 0;
+			}
+		}
 		cout << tablicaArgumentow[i] << " ";
 	}
 	cout << endl;
@@ -304,7 +307,7 @@ struct punkt {
 } Punkt;
 
 //pole wielokąta wypukłego
-void f6(int liczbaArgumentow) {//12 test za wolno
+void f6(int liczbaArgumentow) {
 
 	double *tablicaArgumentow = new double[liczbaArgumentow];
 	WczytajArgumentyDouble(liczbaArgumentow, tablicaArgumentow);
@@ -335,7 +338,7 @@ void f6(int liczbaArgumentow) {//12 test za wolno
 	}
 
 	suma += (tablicaArgumentow[liczbaArgumentow - 2] * tablicaArgumentow[1] - tablicaArgumentow[liczbaArgumentow - 1] * tablicaArgumentow[0]); //ostatni element sumy
-	cout << abs(suma / 2) << endl;
+	cout << Podloga(abs(suma / 2.0)) << endl;
 
 	delete[] tablicaArgumentow;
 }
@@ -354,9 +357,9 @@ void f7(int liczbaArgumentow) {
 
 		double delta = b * b - 4 * a*c;
 
-
-		if (delta == 0) {
+		if (delta == 0 && a != 0) {
 			double x = (-b) / (2 * a);
+
 			cout << Podloga(x) << endl;
 		}
 		else if (delta > 0) {
@@ -378,61 +381,60 @@ void f7(int liczbaArgumentow) {
 	}
 	else {
 		//równanie sześcienne
-		double a = tablicaArgumentow[1]; // od drugiego elementu jest a
-		double b = tablicaArgumentow[2];
-		double c = tablicaArgumentow[3];
+		double a = tablicaArgumentow[0];
+		double b = tablicaArgumentow[1];
+		double c = tablicaArgumentow[2];
+		double d = tablicaArgumentow[3];
 
-		double p = b - a * a / 3;
-		double q = 2 * a*a*a / 27 - a * b / 3 + c;
+		double f = (((3 * c) / a) - (b*b) / (a*a)) / 3;
+		double g = ((2 * b*b*b) / (a*a*a) - (9 * b*c) / (a*a) + (27 * d) / a) / 27;
+		double h = (g*g) / 4 + (f*f*f) / 27;
 
-		double delta = q * q / 4 + p * p*p / 27;
+		if (h > 0) {//jeden pierwiastek realny
+			double R = sqrt(h) - g / 2;
+			double S = CubicRoot(R);
+			double T = -sqrt(h) - g / 2;
+			double U = CubicRoot(T);
 
-		if (Sufit(delta) > 0) {//jest tylko jedno rozwiązanie
-
-			double pomocnicza1 = -q / 2 + sqrt(delta);
-			double pomocnicza2 = -q / 2 - sqrt(delta);
-			double x = 0;
-
-			if (pomocnicza1 < 0) {
-				x += -pow(-pomocnicza1, 1.0 / 3.0);
-			}
-			else {
-				x += pow(pomocnicza1, 1.0 / 3.0);
-			}
-
-			if (pomocnicza2 < 0) {
-				x += -pow(-pomocnicza2, 1.0 / 3.0);
-			}
-			else {
-				x += pow(pomocnicza2, 1.0 / 3.0);
-			}
-
-			x -= a / 3.0;
-			cout << Podloga(x) << endl;
+			double pierwiastek = (S + U) - b / (3 * a);
+			cout << Podloga(pierwiastek) << endl;
 		}
 
-		else if (Sufit(delta) == 0) { // dwa rozwiązania		
+		else if (h == 0 && g == 0 && f == 0) {//1 pierwiastek potrójny
+			double pierwiastek = -CubicRoot(d / a);
+			cout << Podloga(pierwiastek) << endl;
+		}
+		else {//3 różne pierwiastki
+			double i = sqrt((g*g) / 4 - h);
+			double j = CubicRoot(i);
+			double k = acos(-(g / (2 * i)));
+			double L = -j;
+			double M = cos(k / 3);
+			double N = sqrt(3.0)*sin(k / 3);
+			double P = -(b / (3 * a));
 
-			double x1 = 0, x2 = 0;
-			if (q < 0) {
-				x1 = -2 * (-pow(-q / 2.0, 1.0 / 3.0)) - a / 3.0;
-				x2 = (-pow(-q / 2.0, 1.0 / 3.0)) - a / 3.0;
+			double p1 = 2 * j*cos(k / 3) - (b / (3 * a));
+			double p2 = L * (M + N) + P;
+			double p3 = L * (M - N) + P;
+
+			//sortuj
+			if (p3 < p1) { ZamienMiejscamiDouble(p3, p1); }
+			if (p2 < p1) { ZamienMiejscamiDouble(p2, p1); }
+
+			//usuń duplikaty
+			if (Podloga(p1) == Podloga(p2) && Podloga(p1) == Podloga(p3)) {
+				cout << Podloga(p1) << endl;
+			}
+			else if (Podloga(p1) == Podloga(p2) || Podloga(p1) == Podloga(p3)) {
+					cout << Podloga(p2) << " " << Podloga(p3) << endl;
+			}
+			else if (Podloga(p2) == Podloga(p1) || Podloga(p2) == Podloga(p3)) {
+					cout << Podloga(p1) << " " << Podloga(p3) << endl;
 			}
 			else {
-				x1 = -2 * pow(q / 2.0, 1.0 / 3.0) - a / 3.0;
-				x2 = pow(q / 2.0, 1.0 / 3.0) - a / 3.0;
+				cout << Podloga(p1) << " " << Podloga(p2) << " " << Podloga(p3) << endl;
 			}
-
-			cout << Podloga(x1) << " " << Podloga(x2) << endl;
 		}
-		else { // trzy rozwiązania
-			double x1 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * asin((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p)))) - a / 3.0;
-			double x2 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * asin((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p))) + M_PI / 3.0) - a / 3.0;
-			double x3 = 2 / sqrt(3.0)*sqrt(-p)*sin(1.0 / 3.0 * acos((3.0 * sqrt(3.0)*q) / (2.0 * sqrt(-p)*sqrt(-p)*sqrt(-p))) + M_PI / 6.0) - a / 3.0;
-
-			cout << Podloga(x1) << " " << Podloga(x2) << " " << Podloga(x3) << endl;
-		}
-
 	}
 
 	delete[] tablicaArgumentow;
@@ -443,36 +445,38 @@ void f8(int liczbaArgumentow) {
 	int *tablicaArgumentow = new int[liczbaArgumentow];
 	WczytajArgumentyInt(liczbaArgumentow, tablicaArgumentow);
 
-	long long int wynik = 0;
-	for (int i = 1; i <= tablicaArgumentow[0]; i++)
+	for (int i = 0; i < liczbaArgumentow; i++)
 	{
-		wynik += i * (i + 1)*(i + 1);
+		long long int wynik = 0;
+		for (int j = 1; j <= tablicaArgumentow[i]; j++)
+		{
+			wynik += (j*j*j + 2 * j*j + j);
+		}
+		cout << fixed << wynik << " ";
 	}
-	cout << fixed << wynik << endl;
+	cout << endl;
 	delete[] tablicaArgumentow;
 }
 
 // zlicz liczbę bitów
 void f9(int liczbaArgumentow) {
-	uint32_t *tablicaArgumentow = new uint32_t[liczbaArgumentow];
+	unsigned long long int *tablicaArgumentow = new unsigned long long int[liczbaArgumentow];
 	WczytajArgumentyUint(liczbaArgumentow, tablicaArgumentow);
 
-	for (int i = 0; i < liczbaArgumentow; i++)
+	for (int i = 0; i < liczbaArgumentow; i++)//Brian Kernighan
 	{
-		uint32_t liczbaBitow = tablicaArgumentow[i];
-
-		liczbaBitow = liczbaBitow - ((liczbaBitow >> 1) & 0x55555555);
-		liczbaBitow = (liczbaBitow & 0x33333333) + ((liczbaBitow >> 2) & 0x33333333);
-		liczbaBitow = (((liczbaBitow + (liczbaBitow >> 4)) & 0x0F0F0F0F) * 0x01010101) >> 24;
-
-		cout << liczbaBitow << " ";
+		unsigned long long int licznikBitow = 0;
+		while (tablicaArgumentow[i]) {
+			tablicaArgumentow[i] &= (tablicaArgumentow[i] - 1);
+			licznikBitow++;
+		}
+		cout << licznikBitow << " ";
 	}
 	cout << endl;
 }
 
 int main() {
 	int subprogram, liczbaArgumentow;
-
 	while (cin >> subprogram >> liczbaArgumentow) {
 		switch (subprogram) {
 		case 0:
